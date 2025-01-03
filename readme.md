@@ -38,6 +38,6 @@ wget https://github.com/flibitijibibo/SDL2-CS/raw/master/src/SDL2_image.cs
 ```sh
 mkdir SDL
 cd SDL
-curl -O https://github.com/flibitijibibo/SDL2-CS/raw/master/src/SDL2.cs
-curl -O https://github.com/flibitijibibo/SDL2-CS/raw/master/src/SDL2_image.cs
+curl -LO https://github.com/flibitijibibo/SDL2-CS/raw/master/src/SDL2.cs
+curl -LO https://github.com/flibitijibibo/SDL2-CS/raw/master/src/SDL2_image.cs
 ```
