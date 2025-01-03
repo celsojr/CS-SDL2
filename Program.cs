@@ -1,5 +1,6 @@
 ﻿using System;
 using static SDL2.SDL;
+using static SDL2.SDL_ttf;
 using static SDL2.SDL_image;
 using static SDL2.SDL.SDL_EventType;
 
@@ -19,6 +20,8 @@ namespace cslogo
                 0);
 
             Util.CheckResult(window);
+
+            Util.CheckResult(TTF_Init()); // just to check if TTF is working
 
             nint renderer = SDL_CreateRenderer(window, -1, SDL_RendererFlags.SDL_RENDERER_ACCELERATED);
             nint logoTexture = IMG_LoadTexture(renderer, "Assets/cslogo.jpg");
