@@ -6,4 +6,12 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
+  <ItemGroup Condition="'$(OS)' == 'OSX'">
+    <!-- Required by the VS Code debugger on macOS  -->
+    <None Include="/opt/homebrew/lib/libSDL2.dylib" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="/opt/homebrew/lib/libSDL2_image.dylib" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="/opt/homebrew/lib/libSDL2_ttf.dylib" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+
 </Project>
