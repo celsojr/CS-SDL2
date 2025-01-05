@@ -1,4 +1,3 @@
-using SDL2;
 using static SDL2.SDL;
 
 namespace Engine

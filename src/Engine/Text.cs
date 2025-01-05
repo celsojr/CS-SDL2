@@ -9,7 +9,7 @@ namespace Engine
 {
     public class Text
     {
-        private nint _font;
+        private readonly nint _font;
         private nint _textSurface;
         private SDL_Rect _destinationRect;
         private SDL_Rect _textPosition;
@@ -39,6 +39,11 @@ namespace Engine
 
         public void SetText(string text, SDL_Color newColor)
         {
+            if (string.IsNullOrEmpty(text))
+            {
+                throw new Exception($"text cannot be null or empty.");
+            }
+
             if (_textSurface != nint.Zero)
             {
                 SDL_FreeSurface(_textSurface);
@@ -46,6 +51,7 @@ namespace Engine
 
             _color = newColor;
             _textSurface = TTF_RenderUTF8_Blended(_font, text, _color);
+
             if (_textSurface == nint.Zero)
             {
 #if SHOW_DEBUG_HELPERS
@@ -85,7 +91,7 @@ namespace Engine
         {
             if (_textSurface != nint.Zero)
             {
-                SDL_BlitSurface(_textSurface, IntPtr.Zero, surface, ref _textPosition);
+                _ = SDL_BlitSurface(_textSurface, IntPtr.Zero, surface, ref _textPosition);
             }
         }
 

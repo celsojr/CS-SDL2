@@ -24,9 +24,9 @@ namespace Minesweeper
         {
             SDL_Event e = new SDL_Event
             {
-                type = (SDL_EventType)UserEvents.NEW_GAME
+                type = UserEvents.NEW_GAME
             };
-            SDL_PushEvent(ref e);
+            _ = SDL_PushEvent(ref e);
         }
     }
 }

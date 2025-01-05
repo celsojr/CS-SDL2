@@ -1,4 +1,5 @@
 using System;
+using SdlEngine;
 
 using static SDL2.SDL;
 using static SDL2.SDL_image;
@@ -34,7 +35,7 @@ namespace Engine
 
         public void Render(nint surface)
         {
-            SDL_BlitScaled(_imageSurface, IntPtr.Zero, surface, ref _destination);
+            _ = SDL_BlitScaled(_imageSurface, IntPtr.Zero, surface, ref _destination);
         }
 
         ~Image()

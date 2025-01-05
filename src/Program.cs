@@ -1,5 +1,4 @@
-﻿using System;
-using SDL2;
+﻿using Engine;
 using Minesweeper;
 
 using static SDL2.SDL;
@@ -32,15 +31,16 @@ namespace SdlEngine
                 return;
             }
 
-            var gameWindow = new Engine.Window();
-            var ui = new MinesweeperUI();
+            Window gameWindow = new Window();
+            MinesweeperUI ui = new MinesweeperUI();
 
-            SDL_Event e;
             bool shouldQuit = false;
+
+            SDL_FlushEvents(SDL_FIRSTEVENT, SDL_LASTEVENT);
 
             while (!shouldQuit)
             {
-                while (SDL_PollEvent(out e) != 0)
+                while (SDL_PollEvent(out SDL_Event e) != 0)
                 {
                     if (e.type == SDL_QUIT)
                     {

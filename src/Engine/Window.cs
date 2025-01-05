@@ -41,12 +41,12 @@ namespace Engine
             );
             SDL_FreeFormat(format);
 
-            SDL_FillRect(surface, IntPtr.Zero, color);
+            _ = SDL_FillRect(surface, IntPtr.Zero, color);
         }
 
         public void Update()
         {
-            SDL_UpdateWindowSurface(_sdlWindow);
+            _ = SDL_UpdateWindowSurface(_sdlWindow);
         }
 
         public IntPtr GetSurface()
