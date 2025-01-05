@@ -1,9 +1,9 @@
 using System;
 using static SDL2.SDL;
 
-namespace cslogo
+namespace SdlEngine
 {
-    static class Util
+    static class Utils
     {
         internal static void CheckResult(object result)
         {
@@ -22,5 +22,15 @@ namespace cslogo
                     new Exception(SDL_GetError()));
             }
         }
+
+        internal static void CheckSDLError(string context)
+        {
+            string error = SDL_GetError();
+            if (!string.IsNullOrEmpty(error))
+            {
+                Console.WriteLine($"{context}: {error}");
+            }
+        }
+
     }
 }
