@@ -8,6 +8,11 @@ namespace Minesweeper
 {
     public class MinesweeperCell : Button
     {
+        public bool HasBomb { get; private set; }
+        public int AdjacentBombs { get; private set; }
+        public int Row { get { return _row; } }
+        public int Col { get { return _col; } }
+
         private int _adjacentBombs;
         private readonly int _row;
         private readonly int _col;
@@ -19,16 +24,29 @@ namespace Minesweeper
         private readonly Image _bombImage;
         private readonly Text _text;
 
-        public bool HasBomb => _hasBomb;
+        public void IncrementAdjacentBombCount()
+        {
+            AdjacentBombs++;
+        }
+
+        public void SetAdjacentBombs(int count)
+        {
+            AdjacentBombs = count;
+
+            if (count > 0)
+            {
+                _text.SetText(count.ToString(), Config.TEXT_COLORS[count]);
+            }
+        }
+
 
         public MinesweeperCell(int x, int y, int w, int h, int row, int col)
             : base(x, y, w, h)
         {
             _row = row;
             _col = col;
-            _flagImage = new Image(x, y, w, h, "Assets/flag.png");
-            _bombImage = new Image(x, y, w, h, "Assets/bomb.png");
-            // _text = new Text("", x + w / 2, y + h / 2);
+            _flagImage = new Image(x, y, w, h, "/Users/celsojr/Repos/CS-SDL2/Assets/flag.png");
+            _bombImage = new Image(x, y, w, h, "/Users/celsojr/Repos/CS-SDL2/Assets/bomb.png");
             // _text = new Text(x, y, w, h, "", Config.TEXT_COLORS[0]);
             _text = new Text(x, y, w, h, " ", Config.TEXT_COLORS[0]);
         }
@@ -42,10 +60,12 @@ namespace Minesweeper
             if (e.type == UserEvents.CELL_CLEARED)
             {
                 HandleCellCleared(e.user);
+                // HandleCellCleared(e);
             }
             else if (e.type == UserEvents.BOMB_PLACED)
             {
                 HandleBombPlaced(e.user);
+                // HandleBombPlaced(e);
             }
             else if (e.type == UserEvents.GAME_WON)
             {
@@ -129,7 +149,7 @@ namespace Minesweeper
                     data1 = (nint)GCHandle.Alloc(this)
                 }
             };
-            SDL_PushEvent(ref sdlEvent);
+            _ = SDL_PushEvent(ref sdlEvent);
         }
 
         private void HandleCellCleared(SDL_UserEvent e)
@@ -137,8 +157,8 @@ namespace Minesweeper
             if (_isCleared) return;
 
             GCHandle handle = GCHandle.FromIntPtr(e.data1);
-            MinesweeperCell other = handle.Target as MinesweeperCell;
-            if (other != null && IsAdjacent(other) && !other._hasBomb)
+
+            if (handle.Target is MinesweeperCell other && IsAdjacent(other) && !other._hasBomb)
             {
                 ClearCell();
             }
@@ -149,8 +169,8 @@ namespace Minesweeper
         private void HandleBombPlaced(SDL_UserEvent e)
         {
             GCHandle handle = GCHandle.FromIntPtr(e.data1);
-            MinesweeperCell other = handle.Target as MinesweeperCell;
-            if (other != null && IsAdjacent(other))
+
+            if (handle.Target is MinesweeperCell other && IsAdjacent(other))
             {
                 _adjacentBombs++;
                 _text.SetText(_adjacentBombs.ToString(), Config.TEXT_COLORS[_adjacentBombs]);
@@ -159,9 +179,9 @@ namespace Minesweeper
 
         private bool IsAdjacent(MinesweeperCell other)
         {
-            return !(other == this) &&
-                   Math.Abs(other._row - _row) <= 1 &&
-                   Math.Abs(other._col - _col) <= 1;
+            return !(other == this)
+                && Math.Abs(other._row - _row) <= 1
+                && Math.Abs(other._col - _col) <= 1;
         }
 
         protected override void HandleLeftClick()

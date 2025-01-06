@@ -53,8 +53,8 @@ namespace Engine
         };
 
         // Asset Paths
-        public const string BOMB_IMAGE = "Assets/Bomb.png";
-        public const string FLAG_IMAGE = "Assets/flag.png";
-        public const string FONT = "Assets/Rubik-SemiBold.ttf";
+        public const string BOMB_IMAGE = "/Users/celsojr/Repos/CS-SDL2/Assets/Bomb.png";
+        public const string FLAG_IMAGE = "/Users/celsojr/Repos/CS-SDL2/Assets/flag.png";
+        public const string FONT = "/Users/celsojr/Repos/CS-SDL2/Assets/Rubik-SemiBold.ttf";
     }
 }
