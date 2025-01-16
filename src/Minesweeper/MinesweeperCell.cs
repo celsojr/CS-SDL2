@@ -8,8 +8,8 @@ namespace Minesweeper
 {
     public class MinesweeperCell : Button
     {
-        public bool HasBomb { get; private set; }
-        public int AdjacentBombs { get; private set; }
+        public bool HasBomb { get { return _hasBomb; } private set { _hasBomb = value; } }
+        public int AdjacentBombs { get { return _adjacentBombs; } private set { _adjacentBombs = value; } }
         public int Row { get { return _row; } }
         public int Col { get { return _col; } }
 
@@ -51,20 +51,20 @@ namespace Minesweeper
             _text = new Text(x, y, w, h, " ", Config.TEXT_COLORS[0]);
         }
 
-        public override void HandleEvent(SDL_Event e)
+        public override void HandleEvent(in SDL_Event e, int adjBombs)
         {
             if (_isCleared) return;
 
-            base.HandleEvent(e);
+            base.HandleEvent(in e, adjBombs);
 
             if (e.type == UserEvents.CELL_CLEARED)
             {
-                HandleCellCleared(e.user);
+                HandleCellCleared(in e.user);
                 // HandleCellCleared(e);
             }
             else if (e.type == UserEvents.BOMB_PLACED)
             {
-                HandleBombPlaced(e.user);
+                HandleBombPlaced(in e.user, adjBombs);
                 // HandleBombPlaced(e);
             }
             else if (e.type == UserEvents.GAME_WON)
@@ -104,9 +104,14 @@ namespace Minesweeper
                 else if (_adjacentBombs > 0)
                 {
                     _text.SetText(_adjacentBombs.ToString(), Config.TEXT_COLORS[_adjacentBombs]);
+                    // _text.SetText(8.ToString(), Config.TEXT_COLORS[8]);
                     _text.Render(surfacePointer);
                 }
             }
+
+#if DEBUG
+            if (_hasBomb) _bombImage.Render(surfacePointer);
+#endif
         }
 
         public void Reset()
@@ -124,8 +129,16 @@ namespace Minesweeper
         {
             if (_hasBomb) return false;
 
+            // Console.WriteLine("Cell bomb placed");
+
             _hasBomb = true;
-            ReportEvent((uint)UserEvents.BOMB_PLACED);
+
+            // ReportEvent(UserEvents.BOMB_PLACED);
+
+            // Handle adjacent bombs here
+
+
+
             return true;
         }
 
@@ -135,24 +148,48 @@ namespace Minesweeper
             _isCleared = true;
             SetIsDisabled(true);
             SetColor(Config.BUTTON_CLEARED_COLOR);
-            ReportEvent((uint)UserEvents.CELL_CLEARED);
+            ReportEvent(UserEvents.CELL_CLEARED);
         }
 
-        private void ReportEvent(uint eventType)
+        private void ReportEvent(SDL_EventType eventType)
         {
-            SDL_Event sdlEvent = new SDL_Event
+            if (eventType < SDL_EventType.SDL_USEREVENT)
             {
-                type = (SDL_EventType)eventType,
-                user = new SDL_UserEvent
+                Console.WriteLine($"Invalid user event type: {eventType}");
+                return;
+            }
+
+            var handle = GCHandle.Alloc(this);
+
+            try
+            {
+                SDL_Event sdlEvent = new SDL_Event
                 {
-                    type = (SDL_EventType)eventType,
-                    data1 = (nint)GCHandle.Alloc(this)
+                    type = eventType,
+                    user = new SDL_UserEvent
+                    {
+                        type = eventType,
+                        data1 = (nint)handle
+                    }
+                };
+
+                // SDL_Event[] events = new SDL_Event[10];
+                // int count = SDL_PeepEvents(events, 10, SDL_eventaction.SDL_PEEKEVENT, SDL_EventType.SDL_FIRSTEVENT, SDL_EventType.SDL_LASTEVENT);
+                // Console.WriteLine($"Number of events in queue: {count}");
+                // 398 Filtered out a mouse motion event!
+
+                if (SDL_PushEvent(ref sdlEvent) != 0)
+                {
+                    Console.WriteLine($"Failed to push event: {SDL_GetError()}");
                 }
-            };
-            _ = SDL_PushEvent(ref sdlEvent);
+            }
+            finally
+            {
+                handle.Free();
+            }
         }
 
-        private void HandleCellCleared(SDL_UserEvent e)
+        private void HandleCellCleared(in SDL_UserEvent e)
         {
             if (_isCleared) return;
 
@@ -166,15 +203,24 @@ namespace Minesweeper
             handle.Free();
         }
 
-        private void HandleBombPlaced(SDL_UserEvent e)
+        private void HandleBombPlaced(in SDL_UserEvent e, int adjBombs)
         {
             GCHandle handle = GCHandle.FromIntPtr(e.data1);
 
             if (handle.Target is MinesweeperCell other && IsAdjacent(other))
             {
-                _adjacentBombs++;
+                // _adjacentBombs++;
+                // ++_adjacentBombs;
+                ++_adjacentBombs;
+                Console.WriteLine(_adjacentBombs + " bombs placed");
+                Console.WriteLine(adjBombs + " bombs placed");
+                // _text.SetText(_adjacentBombs.ToString(), Config.TEXT_COLORS[other._adjacentBombs]);
                 _text.SetText(_adjacentBombs.ToString(), Config.TEXT_COLORS[_adjacentBombs]);
+                // int adjacentBombs = other.CountAdjacentBombs();
+                // _text.SetText(_adjacentBombs.ToString(), Config.TEXT_COLORS[cell.CountAdjacentBombs()]);
             }
+
+            handle.Free();
         }
 
         private bool IsAdjacent(MinesweeperCell other)
@@ -197,7 +243,7 @@ namespace Minesweeper
             if (!_isCleared)
             {
                 _hasFlag = !_hasFlag;
-                ReportEvent(_hasFlag ? (uint)UserEvents.FLAG_PLACED : (uint)UserEvents.FLAG_CLEARED);
+                ReportEvent(_hasFlag ? UserEvents.FLAG_PLACED : UserEvents.FLAG_CLEARED);
             }
         }
     }

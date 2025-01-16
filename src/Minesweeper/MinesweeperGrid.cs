@@ -40,11 +40,11 @@ namespace Minesweeper
             }
         }
 
-        public void HandleEvent(SDL_Event e)
+        public void HandleEvent(in SDL_Event e)
         {
             if (e.type == UserEvents.CELL_CLEARED)
             {
-                HandleCellCleared(e.user);
+                HandleCellCleared(in e.user);
             }
             else if (e.type == UserEvents.NEW_GAME)
             {
@@ -57,11 +57,12 @@ namespace Minesweeper
 
             foreach (MinesweeperCell child in _children)
             {
-                child.HandleEvent(e);
+                int adjBombs = CountAdjacentBombs(child.Row, child.Col);
+                child.HandleEvent(in e, adjBombs);
             }
         }
 
-        private void HandleCellCleared(SDL_UserEvent e)
+        private void HandleCellCleared(in SDL_UserEvent e)
         {
             if (e.data1 == IntPtr.Zero)
             {
@@ -70,9 +71,10 @@ namespace Minesweeper
 
             // MinesweeperCell cell = e.data1 as MinesweeperCell;
             // MinesweeperCell cell = Marshal.PtrToStructure<MinesweeperCell>(e.data1);
-            MinesweeperCellData cellData = Marshal.PtrToStructure<MinesweeperCellData>(e.data1);
+            // MinesweeperCellData cellData = Marshal.PtrToStructure<MinesweeperCellData>(e.data1);
+            GCHandle handle = GCHandle.FromIntPtr(e.data1);
 
-            if (cellData.HasBomb)
+            if (handle.Target is MinesweeperCell cell && cell.HasBomb)
             {
                 SDL_Event gameLostEvent = new SDL_Event { type = UserEvents.GAME_LOST };
                 _ = SDL_PushEvent(ref gameLostEvent);
@@ -86,27 +88,32 @@ namespace Minesweeper
                     _ = SDL_PushEvent(ref gameWonEvent);
                 }
             }
+
+            handle.Free();
         }
 
         private void PlaceBombs()
         {
             int bombsToPlace = Config.BOMB_COUNT;
+
+            // Double check this
             _cellsToClear = Config.GRID_COLUMNS * Config.GRID_ROWS - Config.BOMB_COUNT;
 
             while (bombsToPlace > 0)
             {
                 int randomIndex = Random.Shared.Next(0, _children.Count);
-                if (_children[randomIndex] is MinesweeperCell cell && !cell.HasBomb)
+                if (_children[randomIndex] is MinesweeperCell cell && !cell.HasBomb && cell.PlaceBomb())
                 {
-                    cell.PlaceBomb();
-                    UpdateAdjacentCells(cell.Row, cell.Col);
-                    bombsToPlace--;
+                    // cell.PlaceBomb();
+                    // UpdateAdjacentCells(cell.Row, cell.Col);
+                    --bombsToPlace;
                 }
             }
 
-            UpdateAllAdjacentBombCounts();
+            // UpdateAllAdjacentBombCounts();
         }
 
+        // Aditional function
         private void UpdateAllAdjacentBombCounts()
         {
             foreach (var cell in _children)
@@ -119,6 +126,7 @@ namespace Minesweeper
             }
         }
 
+        // Aditional function
         private int CountAdjacentBombs(int row, int col)
         {
             int bombCount = 0;
@@ -147,7 +155,7 @@ namespace Minesweeper
             return bombCount;
         }
 
-
+        // Aditional function
         private void UpdateAdjacentCells(int row, int col)
         {
             int[] dRow = [-1, -1, -1, 0, 0, 1, 1, 1];
@@ -161,7 +169,8 @@ namespace Minesweeper
                 if (adjRow >= 1 && adjRow <= Config.GRID_ROWS &&
                     adjCol >= 1 && adjCol <= Config.GRID_COLUMNS)
                 {
-                    int index = (adjRow - 1) * Config.GRID_COLUMNS + (adjCol - 1);
+                    // int index = (adjRow - 1) * Config.GRID_COLUMNS + (adjCol - 1);
+                    int index = 1;
                     if (_children[index] is MinesweeperCell adjCell && !adjCell.HasBomb)
                     {
                         adjCell.IncrementAdjacentBombCount();

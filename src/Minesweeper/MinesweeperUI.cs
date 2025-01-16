@@ -36,11 +36,11 @@ namespace Minesweeper
             _counter.Render(surfacePointer);
         }
 
-        public void HandleEvent(SDL_Event e)
+        public void HandleEvent(in SDL_Event e)
         {
-            _grid.HandleEvent(e);
-            _button.HandleEvent(e);
-            _counter.HandleEvent(e);
+            _grid.HandleEvent(in e);
+            _button.HandleEvent(in e);
+            _counter.HandleEvent(in e);
         }
     }
 }

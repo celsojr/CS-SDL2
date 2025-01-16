@@ -7,9 +7,9 @@ namespace Engine
     {
         // Game Settings
         public const string GAME_NAME = "Minesweeper";
-        public const int BOMB_COUNT = 6;
-        public const int GRID_COLUMNS = 8;
-        public const int GRID_ROWS = 4;
+        public const int BOMB_COUNT = 8;
+        public const int GRID_ROWS = 5;
+        public const int GRID_COLUMNS = 5;
 
         static Config()
         {

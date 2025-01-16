@@ -39,7 +39,7 @@ namespace Minesweeper
             _image.Render(surfacePointer);
         }
 
-        public void HandleEvent(SDL_Event e)
+        public void HandleEvent(in SDL_Event e)
         {
             if (e.type == UserEvents.FLAG_PLACED)
             {

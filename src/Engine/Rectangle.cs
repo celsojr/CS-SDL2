@@ -20,7 +20,7 @@ namespace Engine
         {
             // SDL_Surface surface = (SDL_Surface)surfacePointer;
             SDL_Surface surface = Marshal.PtrToStructure<SDL_Surface>(surfacePointer);
-            SDL_FillRect(
+            _ = SDL_FillRect(
                 surfacePointer,
                 ref _rect,
                 SDL_MapRGB(
