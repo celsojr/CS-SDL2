@@ -1,3 +1,4 @@
+// using System;
 using Engine;
 
 using static SDL2.SDL;
@@ -6,9 +7,10 @@ namespace Minesweeper
 {
     public class FlagCounter : Rectangle
     {
+        public static int GetFlagsCount => _flagsAvailable;
         private readonly Image _image;
         private readonly Text _text;
-        private int _flagsAvailable;
+        private static int _flagsAvailable;
 
         public FlagCounter(int x, int y, int w, int h)
             : base(x, y, w, h, Config.FLAG_COUNTER_COLOR)
@@ -43,7 +45,11 @@ namespace Minesweeper
         {
             if (e.type == UserEvents.FLAG_PLACED)
             {
-                --_flagsAvailable;
+                if (_flagsAvailable > 0)
+                {
+                    --_flagsAvailable;
+                    // Console.WriteLine("Flags available: " + _flagsAvailable);
+                }
             }
             else if (e.type == UserEvents.FLAG_CLEARED)
             {
@@ -62,7 +68,10 @@ namespace Minesweeper
                 return;
             }
 
-            _text.SetText(_flagsAvailable.ToString());
+            if (_flagsAvailable > 0)
+                _text.SetText(_flagsAvailable.ToString());
+            else
+                _text.SetText("0");
         }
     }
 }
