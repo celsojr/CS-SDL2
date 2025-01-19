@@ -38,6 +38,12 @@ namespace SdlEngine
                 return;
             }
 
+            if (SDL_Init(SDL_INIT_EVENTS) < 0)
+            {
+                Utils.CheckSDLError("TTF_Init");
+                return;
+            }
+
             // _eventFilter = new SDL_EventFilter(FilterEvents);
             // SDL_SetEventFilter(Marshal.GetFunctionPointerForDelegate(_eventFilter), IntPtr.Zero);
 
@@ -81,12 +87,26 @@ namespace SdlEngine
         {
             SDL_Event managedEvent = Marshal.PtrToStructure<SDL_Event>(sdlevent);
 
+            // if (managedEvent.type == UserEvents.CELL_CLEARED)
+            // {
+            //     managedEvent.type = UserEvents.CELL_CLEARED;
+            //     return 1;
+            // }
+
             return managedEvent.type switch
             {
                 SDL_MOUSEMOTION => ALLOW,
                 SDL_MOUSEBUTTONDOWN => ALLOW,
                 SDL_QUIT => ALLOW,
-                // UserEvents.CELL_CLEARED => ALLOW,
+
+                UserEvents.CELL_CLEARED => ALLOW,
+                UserEvents.BOMB_PLACED => ALLOW,
+                UserEvents.FLAG_PLACED => ALLOW,
+                UserEvents.FLAG_CLEARED => ALLOW,
+                UserEvents.GAME_LOST => ALLOW,
+                UserEvents.GAME_WON => ALLOW,
+                UserEvents.NEW_GAME => ALLOW,
+
                 _ => BLOCK
             };
         }
