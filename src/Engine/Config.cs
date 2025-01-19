@@ -7,9 +7,26 @@ namespace Engine
     {
         // Game Settings
         public const string GAME_NAME = "Minesweeper";
-        public const int BOMB_COUNT = 8;
-        public const int GRID_ROWS = 5;
-        public const int GRID_COLUMNS = 5;
+
+        // Test
+        // public const int BOMB_COUNT = 5;
+        // public const int GRID_ROWS = 3;
+        // public const int GRID_COLUMNS = 3;
+
+        // Beginner
+        public const int BOMB_COUNT = 10;
+        public const int GRID_ROWS = 9;
+        public const int GRID_COLUMNS = 9;
+
+        // // intermediate
+        // public const int BOMB_COUNT = 40;
+        // public const int GRID_ROWS = 8;
+        // public const int GRID_COLUMNS = 15;
+
+        // Expert
+        // public const int BOMB_COUNT = 99;
+        // public const int GRID_ROWS = 10;
+        // public const int GRID_COLUMNS = 20;
 
         static Config()
         {
@@ -41,7 +58,7 @@ namespace Engine
         // Text color based on number of surrounding bombs
         public static readonly List<SDL_Color> TEXT_COLORS = new List<SDL_Color>
         {
-            new SDL_Color { r = 0, g = 0, b = 0, a = 255 }, // Unused
+            new SDL_Color { r = 0, g = 0, b = 0, a = 255 },
             new SDL_Color { r = 0, g = 1, b = 249, a = 255 },
             new SDL_Color { r = 1, g = 126, b = 1, a = 255 },
             new SDL_Color { r = 250, g = 1, b = 2, a = 255 },
