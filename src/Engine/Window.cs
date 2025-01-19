@@ -61,6 +61,7 @@ namespace Engine
                 SDL_DestroyWindow(_sdlWindow);
                 _sdlWindow = IntPtr.Zero;
             }
+            GC.SuppressFinalize(this);
         }
 
         // Prevent copying

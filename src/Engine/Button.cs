@@ -9,7 +9,7 @@ namespace Engine
         public Button(int x, int y, int w, int h)
             : base(x, y, w, h, Config.BUTTON_COLOR) { }
 
-        public virtual void HandleEvent(in SDL_Event e, int adjBombs = 0)
+        public virtual void HandleEvent(in SDL_Event e)
         {
             if (_isDisabled) return;
 

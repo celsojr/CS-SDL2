@@ -23,7 +23,7 @@ namespace Engine
             _font = TTF_OpenFont(Config.FONT, fontSize);
             if (_font == nint.Zero)
             {
-#if SHOW_DEBUG_HELPERS
+#if DEBUG
                 Utils.CheckSDLError("TTF_OpenFont");
 #endif
                 throw new Exception($"Failed to load font: {Config.FONT}");
@@ -54,7 +54,7 @@ namespace Engine
 
             if (_textSurface == nint.Zero)
             {
-#if SHOW_DEBUG_HELPERS
+#if DEBUG
                 Utils.CheckSDLError("TTF_RenderUTF8_Blended");
 #endif
                 throw new Exception($"Failed to render text: {text}");

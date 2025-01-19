@@ -26,7 +26,7 @@ namespace Engine
             _imageSurface = IMG_Load(filename);
             if (_imageSurface == nint.Zero)
             {
-#if SHOW_DEBUG_HELPERS
+#if DEBUG
                 Utils.CheckSDLError("IMG_Load");
 #endif
                 throw new Exception($"Failed to load image: {filename}");
