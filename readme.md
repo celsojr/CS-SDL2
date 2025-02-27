@@ -1,6 +1,11 @@
 # Installing SDL2 and CSharp bindings
 
 ## Search all sdl2 libs
+### Windows
+```pwd
+scoop bucket add extras
+scoop search sdl2
+```
 ### Linux
 ```sh
 apt-cache search libsdl2
@@ -10,6 +15,11 @@ apt-cache search libsdl2
 brew search SDL2
 ```
 ## Install the desired SDL libs
+### Windows
+```pwd
+scoop install sdl2
+scoop install sdl2-image
+```
 ### Linux
 ```sh
 apt install libsdl2-2.0-0

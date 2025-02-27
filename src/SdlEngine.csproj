@@ -9,9 +9,12 @@
   <ItemGroup>
     <!-- Required by the VS Code debugger on macOS  -->
     <!-- Libraries for Apple Silicon -->
-    <None Include="/opt/homebrew/lib/libSDL2.dylib" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="/opt/homebrew/lib/libSDL2_image.dylib" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="/opt/homebrew/lib/libSDL2_ttf.dylib" CopyToOutputDirectory="PreserveNewest" />
+    <!-- <None Include="/opt/homebrew/lib/libSDL2.dylib" CopyToOutputDirectory="PreserveNewest" /> -->
+    <!-- <None Include="/opt/homebrew/lib/libSDL2_image.dylib" CopyToOutputDirectory="PreserveNewest" /> -->
+    <!-- <None Include="/opt/homebrew/lib/libSDL2_ttf.dylib" CopyToOutputDirectory="PreserveNewest" /> -->
+    <None Include="C:\\Users\\sabit\\scoop\\apps\\sdl2\\current\\lib\\SDL2.dll" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="C:\\Users\\sabit\\scoop\\apps\\sdl2-image\\current\\lib\\SDL2_image.dll" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="C:\\Users\\sabit\\scoop\\apps\\sdl2-ttf\\current\\lib\\SDL2_ttf.dll" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>
