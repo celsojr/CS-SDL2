@@ -3,6 +3,7 @@
 ## Search all sdl2 libs
 ### Windows
 ```pwd
+scoop bucket add extras
 scoop search sdl2
 ```
 ### Linux
