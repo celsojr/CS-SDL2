@@ -6,15 +6,23 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
-  <ItemGroup>
-    <!-- Required by the VS Code debugger on macOS  -->
-    <!-- Libraries for Apple Silicon -->
-    <!-- <None Include="/opt/homebrew/lib/libSDL2.dylib" CopyToOutputDirectory="PreserveNewest" /> -->
-    <!-- <None Include="/opt/homebrew/lib/libSDL2_image.dylib" CopyToOutputDirectory="PreserveNewest" /> -->
-    <!-- <None Include="/opt/homebrew/lib/libSDL2_ttf.dylib" CopyToOutputDirectory="PreserveNewest" /> -->
-    <None Include="C:\\Users\\sabit\\scoop\\apps\\sdl2\\current\\lib\\SDL2.dll" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="C:\\Users\\sabit\\scoop\\apps\\sdl2-image\\current\\lib\\SDL2_image.dll" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="C:\\Users\\sabit\\scoop\\apps\\sdl2-ttf\\current\\lib\\SDL2_ttf.dll" CopyToOutputDirectory="PreserveNewest" />
+  <PropertyGroup>
+    <UserProfile Condition="'$(OS)' == 'Windows_NT'">$(USERPROFILE)</UserProfile>
+    <ScoopPath Condition="'$(OS)' == 'Windows_NT'">$(UserProfile)\scoop\apps</ScoopPath>
+    <HomebrewPath Condition="'$(OS)' != 'Windows_NT'">/opt/homebrew/lib</HomebrewPath>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(OS)' == 'Windows_NT'">
+    <None Include="$(ScoopPath)\sdl2\current\lib\SDL2.dll" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="$(ScoopPath)\sdl2-image\current\lib\SDL2_image.dll" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="$(ScoopPath)\sdl2-ttf\current\lib\SDL2_ttf.dll" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(OS)' != 'Windows_NT'">
+    <None Include="$(HomebrewPath)/libSDL2.dylib" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="$(HomebrewPath)/libSDL2_image.dylib" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="$(HomebrewPath)/libSDL2_ttf.dylib" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>
+
