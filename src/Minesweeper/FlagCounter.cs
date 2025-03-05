@@ -1,6 +1,7 @@
 // using System;
+using System.IO;
 using Engine;
-
+using SdlEngine;
 using static SDL2.SDL;
 
 namespace Minesweeper
@@ -19,7 +20,7 @@ namespace Minesweeper
                 x, y,
                 Config.FOOTER_HEIGHT - Config.PADDING,
                 Config.FOOTER_HEIGHT - Config.PADDING,
-                Config.FLAG_IMAGE,
+                Utils.Assets(Path.Combine("Images", "flag.png")),
                 24
             );
 

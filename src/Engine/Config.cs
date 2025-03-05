@@ -68,10 +68,5 @@ namespace Engine
             new SDL_Color { r = 0, g = 0, b = 0, a = 255 },
             new SDL_Color { r = 128, g = 128, b = 128, a = 255 }
         };
-
-        // Asset Paths
-        public const string BOMB_IMAGE = "/Users/celsojr/Repos/CS-SDL2/Assets/Bomb.png";
-        public const string FLAG_IMAGE = "/Users/celsojr/Repos/CS-SDL2/Assets/flag.png";
-        public const string FONT = "/Users/celsojr/Repos/CS-SDL2/Assets/Rubik-SemiBold.ttf";
     }
 }

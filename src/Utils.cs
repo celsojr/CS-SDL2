@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using static SDL2.SDL;
 
 namespace SdlEngine
@@ -12,6 +13,11 @@ namespace SdlEngine
             {
                 Console.WriteLine($"{context}: {error}");
             }
+        }
+
+        internal static string Assets(string filename)
+        {
+            return Path.Combine(AppContext.BaseDirectory, "Assets", filename);
         }
     }
 }

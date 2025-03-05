@@ -6,6 +6,13 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
+  <ItemGroup>
+      <Content Include="$(ProjectDir)..\Assets\**\*">
+          <Link>Assets\%(RecursiveDir)%(Filename)%(Extension)</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+  </ItemGroup>
+
   <PropertyGroup>
     <UserProfile Condition="'$(OS)' == 'Windows_NT'">$(USERPROFILE)</UserProfile>
     <ScoopPath Condition="'$(OS)' == 'Windows_NT'">$(UserProfile)\scoop\apps</ScoopPath>
