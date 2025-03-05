@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using SdlEngine;
 using System.Runtime.InteropServices;
 
@@ -20,13 +21,13 @@ namespace Engine
             _destinationRect = new SDL_Rect { x = x, y = y, w = w, h = h };
             _color = color.Equals(default(SDL_Color)) ? new SDL_Color { r = 0, g = 0, b = 0, a = 255 } : color;
 
-            _font = TTF_OpenFont(Config.FONT, fontSize);
+            _font = TTF_OpenFont(Utils.Assets(Path.Combine("Fonts", "Rubik-SemiBold.ttf")), fontSize);
             if (_font == nint.Zero)
             {
 #if DEBUG
                 Utils.CheckSDLError("TTF_OpenFont");
 #endif
-                throw new Exception($"Failed to load font: {Config.FONT}");
+                throw new Exception($"Failed to load font: {Utils.Assets(Path.Combine("Fonts", "Rubik-SemiBold.ttf"))}");
             }
 
             SetText(content);

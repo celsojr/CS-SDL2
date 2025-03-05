@@ -1,5 +1,7 @@
 using System;
+using System.IO;
 using Engine;
+using SdlEngine;
 using System.Runtime.InteropServices;
 
 using static SDL2.SDL;
@@ -60,8 +62,8 @@ namespace Minesweeper
         {
             _row = row;
             _col = col;
-            _flagImage = new Image(x, y, w, h, "/Users/celsojr/Repos/CS-SDL2/Assets/flag.png");
-            _bombImage = new Image(x, y, w, h, "/Users/celsojr/Repos/CS-SDL2/Assets/bomb.png");
+            _flagImage = new Image(x, y, w, h, Utils.Assets(Path.Combine("Images", "flag.png")));
+            _bombImage = new Image(x, y, w, h, Utils.Assets(Path.Combine("Images", "bomb.png")));
             // _text = new Text(x, y, w, h, "", Config.TEXT_COLORS[0]); // "" non white space string is throwing
             _text = new Text(x, y, w, h, " ", Config.TEXT_COLORS[0]);
         }
