@@ -17,7 +17,8 @@ namespace SdlEngine
 
         internal static string Assets(string filename)
         {
-            return Path.Combine(AppContext.BaseDirectory, "Assets", filename);
+            return Path.Combine(AppContext.BaseDirectory,
+                "Assets", filename.Replace('/', Path.DirectorySeparatorChar));
         }
     }
 }
