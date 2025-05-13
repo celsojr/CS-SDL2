@@ -16,7 +16,9 @@ namespace Minesweeper
         public int Row => _row;
         public int Col => _col;
         public bool IsCleared => _isCleared;
+        public bool IsClicked => _isClicked;
 
+        private bool _isClicked;
         private int _adjacentBombs;
         private readonly int _row;
         private readonly int _col;
