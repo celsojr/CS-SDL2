@@ -1,58 +1,122 @@
-﻿using System;
-using static SDL2.SDL;
-using static SDL2.SDL_ttf;
-using static SDL2.SDL_image;
-using static SDL2.SDL.SDL_EventType;
+using System;
+using System.IO;
+using SDL2;
 
 namespace cslogo
 {
-    class Program
+    public class TileEditor
     {
+        const int TileSize = 16; // 32x32 pixels per tile
+        const int FrameDelay = 16; // ~60 FPS
+        const string TilemapPath = "Assets/tilemap.txt";
+        const string TilesetPath = "Assets/tiles.png";
+
+        static SDL.SDL_Rect GetTileSrcRect(char c)
+        {
+            int index = c switch
+            {
+                '0' => 0,
+                '1' => 1,
+                '2' => 2,
+                '3' => 3,
+                '4' => 4,
+                '5' => 5,
+                '6' => 6,
+                '7' => 7,
+                '8' => 8,
+                'F' => 9,
+                'M' => 10,
+                'H' => 11,
+                _ => 11 // Default to hidden
+            };
+            return new SDL.SDL_Rect { x = index * TileSize, y = 0, w = TileSize, h = TileSize };
+        }
+
+        static char[,] LoadTilemap()
+        {
+            var lines = File.ReadAllLines(TilemapPath);
+            int rows = lines.Length;
+            int cols = lines[0].Length;
+            var map = new char[rows, cols];
+            for (int r = 0; r < rows; r++)
+                for (int c = 0; c < cols; c++)
+                    map[r, c] = lines[r][c];
+            return map;
+        }
+
         static void Main()
         {
-            Util.CheckResult(SDL_Init(SDL_INIT_VIDEO));
+            SDL.SDL_Init(SDL.SDL_INIT_VIDEO);
+            var window = SDL.SDL_CreateWindow("Minesweeper UI Prototype",
+                SDL.SDL_WINDOWPOS_CENTERED, SDL.SDL_WINDOWPOS_CENTERED,
+                800, 600, SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN);
 
-            nint window = SDL_CreateWindow("C# bindings for SDL2",
-                SDL_WINDOWPOS_UNDEFINED,
-                SDL_WINDOWPOS_UNDEFINED,
-                512,
-                512,
-                0);
+            var renderer = SDL.SDL_CreateRenderer(window, -1, SDL.SDL_RendererFlags.SDL_RENDERER_ACCELERATED);
+            var surface = SDL_image.IMG_Load(TilesetPath);
+            var tileset = SDL.SDL_CreateTextureFromSurface(renderer, surface);
+            SDL.SDL_FreeSurface(surface);
 
-            Util.CheckResult(window);
+            char[,] tilemap = LoadTilemap();
+            bool dirty = true;
 
-            Util.CheckResult(TTF_Init()); // just to check if TTF is working
-
-            nint renderer = SDL_CreateRenderer(window, -1, SDL_RendererFlags.SDL_RENDERER_ACCELERATED);
-            nint logoTexture = IMG_LoadTexture(renderer, "Assets/cslogo.jpg");
-
-            Util.CheckResult(SDL_RenderClear(renderer));
-            Util.CheckResult(SDL_RenderCopy(renderer, logoTexture, IntPtr.Zero, IntPtr.Zero));
-
-            SDL_RenderPresent(renderer);
-
-            bool quit = false;
-            while (!quit && SDL_WaitEvent(out SDL_Event e) != 0)
+            // Watch file changes
+            var watcher = new FileSystemWatcher(Path.GetDirectoryName(TilemapPath) ?? ".", Path.GetFileName(TilemapPath))
             {
-                switch (e.type)
+                NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.Size,
+                EnableRaisingEvents = true
+            };
+            watcher.Changed += (s, e) =>
+            {
+                try
                 {
-                    case SDL_QUIT:
-                        quit = true;
-                        break;
-                    
-                    case SDL_KEYDOWN:
-                        if (e.key.keysym.sym == SDL_Keycode.SDLK_ESCAPE)
-                        {
-                            quit = true;
-                        }
-                        break;
+                    tilemap = LoadTilemap();
+                    dirty = true;
                 }
+                catch { /* might be reading during write, ignore */ }
+            };
+
+            bool running = true;
+            SDL.SDL_Event e;
+            while (running)
+            {
+                while (SDL.SDL_PollEvent(out e) != 0)
+                {
+                    if (e.type == SDL.SDL_EventType.SDL_QUIT)
+                        running = false;
+                }
+
+                if (dirty)
+                {
+                    SDL.SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+                    SDL.SDL_RenderClear(renderer);
+
+                    for (int r = 0; r < tilemap.GetLength(0); r++)
+                    {
+                        for (int c = 0; c < tilemap.GetLength(1); c++)
+                        {
+                            SDL.SDL_Rect src = GetTileSrcRect(tilemap[r, c]);
+                            SDL.SDL_Rect dst = new SDL.SDL_Rect
+                            {
+                                x = c * TileSize,
+                                y = r * TileSize,
+                                w = TileSize,
+                                h = TileSize
+                            };
+                            SDL.SDL_RenderCopy(renderer, tileset, ref src, ref dst);
+                        }
+                    }
+
+                    SDL.SDL_RenderPresent(renderer);
+                    dirty = false;
+                }
+
+                SDL.SDL_Delay(FrameDelay);
             }
 
-            SDL_DestroyTexture(logoTexture);
-            SDL_DestroyRenderer(renderer);
-            SDL_DestroyWindow(window);
-            SDL_Quit();
+            SDL.SDL_DestroyTexture(tileset);
+            SDL.SDL_DestroyRenderer(renderer);
+            SDL.SDL_DestroyWindow(window);
+            SDL.SDL_Quit();
         }
     }
 }
