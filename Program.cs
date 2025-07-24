@@ -82,7 +82,7 @@ namespace cslogo
 
             var window = SDL.SDL_CreateWindow("Minesweeper UI Prototype",
                 SDL.SDL_WINDOWPOS_CENTERED, SDL.SDL_WINDOWPOS_CENTERED,
-                640, 480, SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN);
+                168, 168, SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN);
 
             var renderer = SDL.SDL_CreateRenderer(window, -1, SDL.SDL_RendererFlags.SDL_RENDERER_ACCELERATED);
             var surface = SDL_image.IMG_Load(TilesetPath);
