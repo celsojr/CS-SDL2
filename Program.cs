@@ -130,7 +130,7 @@ namespace cslogo
 
                 if (dirty)
                 {
-                    SDL.SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+                    SDL.SDL_SetRenderDrawColor(renderer, 192, 192, 192, 255);
                     SDL.SDL_RenderClear(renderer);
 
                     foreach (var tile in tileElements)
